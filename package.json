@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
 			"dev": "next dev --turbopack",
-			"prebuild": "npm install @prisma/client && npx prisma generate",
+			"prebuild": "npm install && npx prisma generate",
 			"build": "next build",
 			"start": "next start",
 			"lint": "next lint"
