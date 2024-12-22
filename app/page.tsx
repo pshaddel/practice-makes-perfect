@@ -23,7 +23,7 @@ export default function HomePage() {
         </h1>
 
         <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
-          Wählen Sie Ihre Interessengebiete aus und beginnen Sie mit dem Üben von Programmierfragen.
+          Wählen Sie Ihre Interessengebiete aus und beginnen Sie mit dem Üben von Deutsche Sprache.
         </p>
 
         <div className="mb-8">
