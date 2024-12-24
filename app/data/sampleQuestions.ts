@@ -1,3 +1,5 @@
+import { Question } from "../types/quiz";
+
 export const availableTags = [
   'Grammatik',
   'Wortschatz',
@@ -17,7 +19,7 @@ export const availableTags = [
   'Bildung',
 ] as const;
 
-export const questions = [
+export const questions: Question[] = [
   {
     id: '1',
     text: 'Was ist der Unterschied zwischen "sein" und "haben" im Perfekt?',
@@ -38,5 +40,32 @@ export const questions = [
       { id: 'fliegen', text: 'fliegen' }
     ]
   },
+  {
+    id: '3',
+    text: 'Wie sagt man "Guten Morgen" auf Französisch?',
+    type: 'text',
+    duration: 30,
+    tags: ['Wortschatz', 'Sprechen']
+  },
+  {
+    id: '4',
+    text: 'Welche dieser Städte liegt in Deutschland?',
+    type: 'multiple-choice',
+    duration: 45,
+    tags: ['Geographie', 'Lesen'],
+    choices: [
+      { id: 'berlin', text: 'Berlin' },
+      { id: 'paris', text: 'Paris' },
+      { id: 'wien', text: 'Wien' },
+      { id: 'zürich', text: 'Zürich' }
+    ]
+  },
+  {
+    id: '5',
+    text: 'Was ist die Hauptstadt von Bayern?',
+    type: 'text',
+    duration: 30,
+    tags: ['Geographie', 'Schreiben']
+  }
   // Add more sample questions as needed
 ];

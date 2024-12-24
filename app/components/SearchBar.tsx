@@ -3,17 +3,18 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { availableTags } from '../data/sampleQuestions';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
+import { useRouter } from 'next/navigation';
 
 interface SearchBarProps {
-  onTagsChange: (tags: string[]) => void;
   autoFocus?: boolean;
 }
 
-export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBarProps) {
+export default function SearchBar({ autoFocus = false }: SearchBarProps) {
   const [input, setInput] = useState('');
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isFocused, setIsFocused] = useState(false);
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +31,12 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
       inputRef.current?.blur();
     }
   });
+  useEffect(() => {
+    // Update the URL query parameters whenever the tags state changes
+    const query = new URLSearchParams({ tags: selectedTags.join(',') }).toString();
+    router.push(`?${query}`, {});
+  }, [selectedTags, router]);
+
 
   // Auto-focus effect
   useEffect(() => {
@@ -51,7 +58,7 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
       setSuggestions([]);
       setSelectedSuggestionIndex(-1);
     }
-  }, [input, selectedTags]);
+  }, [input, selectedTags, setSelectedSuggestionIndex]);
 
   // Scroll selected suggestion into view
   useEffect(() => {
@@ -70,7 +77,6 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
     if (!selectedTags.includes(tag)) {
       const newTags = [...selectedTags, tag];
       setSelectedTags(newTags);
-      onTagsChange(newTags);
     }
     setInput('');
     setSelectedSuggestionIndex(-1);
@@ -80,7 +86,7 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
   const removeTag = (tagToRemove: string) => {
     const newTags = selectedTags.filter(tag => tag !== tagToRemove);
     setSelectedTags(newTags);
-    onTagsChange(newTags);
+    // onTagsChange(newTags);
     inputRef.current?.focus();
   };
 
@@ -100,6 +106,7 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
               >
                 {tag}
                 <button
+                  type='button'
                   onClick={() => removeTag(tag)}
                   className="hover:bg-blue-100 rounded-full p-0.5 transition-colors duration-200 opacity-60 group-hover:opacity-100"
                 >
@@ -128,6 +135,7 @@ export default function SearchBar({ onTagsChange, autoFocus = false }: SearchBar
           >
             {suggestions.map((tag, index) => (
               <button
+                type="button"
                 key={tag}
                 onClick={() => addTag(tag)}
                 className={`w-full px-4 py-2 text-left transition-colors duration-200 ${index === selectedSuggestionIndex

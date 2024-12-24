@@ -1,15 +1,46 @@
+'use client';
 import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ArrowLeft, AlertCircle, Timer as TimerIcon } from 'lucide-react';
-import type { Question, Answer, QuizConfig } from '../types/quiz';
 import Timer from './Timer';
+import { useRouter } from 'next/navigation';
+
+export interface Choice {
+  id: string;
+  text: string;
+}
+
+export interface Question {
+  id: string;
+  text: string;
+  type: 'multiple-choice' | 'text';
+  choices?: Choice[];
+  duration?: number;
+  tags: string[];
+}
+
+export interface QuizConfig {
+  questions: Question[];
+  totalDuration?: number;
+}
+
+export interface Answer {
+  questionId: string;
+  answer: string;
+}
 
 interface QuizComponentProps {
   config: QuizConfig;
-  onComplete: (answers: Answer[]) => void;
+  // onComplete: (answers: Answer[]) => void;
 }
 
-export default function QuizComponent({ config, onComplete }: QuizComponentProps) {
+export default function QuizComponent({ config }: QuizComponentProps) {
+  const onComplete = (answers: Answer[]) => {
+    console.log('Completed', answers);
+  };
   const { questions, totalDuration } = config;
+  if (!questions || questions.length === 0) {
+    return <DefaultView />;
+  }
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Answer[]>([]);
   const [currentAnswer, setCurrentAnswer] = useState('');
@@ -69,7 +100,7 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
     if (currentIndex > 0 && !isAnimating) {
       setIsAnimating(true);
       setSlideDirection('right');
-      
+
       setTimeout(() => {
         setCurrentIndex(prev => prev - 1);
         const previousAnswer = answers.find(a => a.questionId === questions[currentIndex - 1].id);
@@ -161,7 +192,7 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
                 </span>
               </div>
             </div>
-            
+
             <div className="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
               <div
                 className="bg-blue-600 h-2 rounded-full transition-all duration-500 ease-in-out"
@@ -173,7 +204,7 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
           {/* Question Content */}
           <div className="p-8 relative overflow-hidden">
             <div className={`transform transition-all duration-300 ease-in-out ${
-              isAnimating 
+              isAnimating
                 ? slideDirection === 'left'
                   ? '-translate-x-full opacity-0'
                   : 'translate-x-full opacity-0'
@@ -184,7 +215,7 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
               }`}>
                 {currentQuestion.text}
               </h3>
-              
+
               {isQuestionTimeUp ? (
                 <div className="flex items-center gap-2 text-orange-500 mb-4">
                   <AlertCircle className="w-5 h-5" />
@@ -198,7 +229,7 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
                       onClick={() => setCurrentAnswer(choice.id)}
                       className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 transform hover:scale-[1.01] active:scale-[0.99] ${
                         currentAnswer === choice.id
-                          ? isFocusMode 
+                        ? isFocusMode
                             ? 'border-blue-400 bg-blue-900/50 text-blue-200'
                             : 'border-blue-500 bg-blue-50 text-blue-700'
                           : isFocusMode
@@ -272,6 +303,34 @@ export default function QuizComponent({ config, onComplete }: QuizComponentProps
               <ArrowRight className="w-5 h-5 ml-2" />
             </button>
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DefaultView() {
+  const router = useRouter();
+  const goBackToHome = () => router.push('/');
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-5xl mx-auto text-center">
+        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          Übung macht den Meister
+        </h1>
+
+        <p className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto">
+          We couldn't find any questions to practice. Please go back and try again.
+        </p>
+
+        <div className="mb-8">
+          <button
+            onClick={goBackToHome}
+            className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 group"
+          >
+            Go Back Home
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+          </button>
         </div>
       </div>
     </div>
