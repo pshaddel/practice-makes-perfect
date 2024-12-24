@@ -1,3 +1,4 @@
+'use client'
 import React, { Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';

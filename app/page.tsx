@@ -1,17 +1,23 @@
-'use client'
-import React, { useState } from 'react';
+import React from 'react';
 import SearchBar from './components/SearchBar';
 import Logo from './components/Logo';
 import Footer from './components/Footer';
 import StartButton from './components/StartButton';
+import AnimatedText from './components/AnimatedText';
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-gradient-animation flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-5xl mx-auto text-center">
         <Logo />
 
         <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          <AnimatedText texts={['Übung macht den Meister', 'Practice Makes Perfect']} />
+        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 hidden">
+          Practice makes perfect
+        </h1>
+        <h1 className="text-2xl font-bold text-gray-900 mb-6 hidden">
           Übung macht den Meister
         </h1>
 
@@ -28,5 +34,5 @@ export default function HomePage() {
 
       <Footer />
     </div>
-  );
+  )
 }
