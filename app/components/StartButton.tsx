@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { ArrowRight } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 
-export default function StartButton() {
+export function Start() {
   const router = useRouter();
   const searchParams = useSearchParams();
   //
@@ -23,4 +23,13 @@ export default function StartButton() {
       <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
     </button>
   );
+}
+
+export default function StartButton() {
+  return (
+    // You could have a loading skeleton as the `fallback` too
+    <Suspense>
+      <Start />
+    </Suspense>
+  )
 }
