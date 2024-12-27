@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { ArrowRight, ArrowLeft, AlertCircle, Timer as TimerIcon } from 'lucide-react';
 import Timer from './Timer';
 import { useRouter } from 'next/navigation';
+import QuestionList from './question-list';
 
 export interface Choice {
   id: string;
@@ -51,6 +52,18 @@ export default function QuizComponent({ config }: QuizComponentProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
+
+  const [isQuizStarted, setIsQuizStarted] = useState(true);
+  const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
+
+  const handleSelectQuestions = (questions: Question[]) => {
+    setSelectedQuestions(questions);
+    setIsQuizStarted(true);
+  };
+
+  if (!isQuizStarted) {
+    return <QuestionList questions={config.questions} onSelectQuestions={handleSelectQuestions} />;
+  }
 
   useEffect(() => {
     setIsQuestionTimeUp(false);
