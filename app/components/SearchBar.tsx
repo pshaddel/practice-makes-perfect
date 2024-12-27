@@ -3,20 +3,23 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Search, X } from 'lucide-react';
 import { availableTags } from '../data/sampleQuestions';
 import useKeyboardNavigation from '../hooks/useKeyboardNavigation';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { goToQuestionsList } from './StartButton';
 
 interface SearchBarProps {
   autoFocus?: boolean;
+  tags?: string[];
 }
 
-export default function SearchBar({ autoFocus = false }: SearchBarProps) {
+export default function SearchBar({ autoFocus = false, tags }: SearchBarProps) {
   const [input, setInput] = useState('');
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>(tags || []);
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
+  const searchParams = useSearchParams();
 
   const {
     selectedIndex: selectedSuggestionIndex,
@@ -29,14 +32,15 @@ export default function SearchBar({ autoFocus = false }: SearchBarProps) {
     onEscape: () => {
       setIsFocused(false);
       inputRef.current?.blur();
-    }
+    },
+    onSearch: () => goToQuestionsList(searchParams, router)
   });
+
   useEffect(() => {
     // Update the URL query parameters whenever the tags state changes
     const query = new URLSearchParams({ tags: selectedTags.join(',') }).toString();
     router.push(`?${query}`, {});
   }, [selectedTags, router]);
-
 
   // Auto-focus effect
   useEffect(() => {

@@ -5,7 +5,23 @@ import Footer from './components/Footer';
 import StartButton from './components/StartButton';
 import AnimatedText from './components/AnimatedText';
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
+  const searchTags = (await searchParams).tags as string | string[] | undefined;
+  let tags: string[] = [];
+
+  if (typeof searchTags === 'string') {
+    tags = [searchTags];
+  }
+
+  if (Array.isArray(searchTags)) {
+    tags = searchTags;
+  }
+
+  if (tags.length === 0 || tags[0] === '') {
+    tags = [];
+  }
   return (
     <div className="min-h-screen bg-gradient-animation flex flex-col items-center justify-center px-6">
       <div className="w-full max-w-5xl mx-auto text-center">
@@ -26,7 +42,7 @@ export default function HomePage() {
         </p>
 
         <div className="mb-8">
-          <SearchBar autoFocus={true} />
+          <SearchBar autoFocus={true} tags={tags} />
         </div>
         <StartButton />
 
