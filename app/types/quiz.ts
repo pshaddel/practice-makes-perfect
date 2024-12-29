@@ -10,6 +10,7 @@ export interface Question {
   choices?: Choice[];
   duration?: number;
   tags: string[];
+  isSingleAnswer?: boolean;
   answers: string[];
   explanation?: string;
 }

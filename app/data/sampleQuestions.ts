@@ -26,7 +26,9 @@ export const questions: Question[] = [
     type: 'text',
     duration: 120,
     tags: ['Grammatik', 'Schreiben'],
-    answers: ['sein ist ein Hilfsverb', 'haben ist ein Vollverb']
+    answers: ['sein ist ein Hilfsverb', 'haben ist ein Vollverb'],
+    isSingleAnswer: true,
+    explanation: 'Im Perfekt wird das Hilfsverb "sein" für Verben der Bewegung und des Zustands verwendet, z.B. "Ich bin gelaufen". Das Hilfsverb "haben" wird für alle anderen Verben verwendet, z.B. "Ich habe geschlafen".'
   },
   {
     id: '2',
@@ -34,6 +36,7 @@ export const questions: Question[] = [
     type: 'multiple-choice',
     duration: 60,
     tags: ['Wortschatz', 'Lesen'],
+    isSingleAnswer: true,
     choices: [
       { id: 'laufen', text: 'laufen' },
       { id: 'fahren', text: 'fahren' },
@@ -47,6 +50,7 @@ export const questions: Question[] = [
     text: 'Wie sagt man "Guten Morgen" auf Französisch?',
     type: 'text',
     duration: 30,
+    isSingleAnswer: true,
     tags: ['Wortschatz', 'Sprechen'],
     answers: ['Bonjour']
   },
@@ -62,6 +66,7 @@ export const questions: Question[] = [
       { id: 'wien', text: 'Wien' },
       { id: 'zürich', text: 'Zürich' }
     ],
+    isSingleAnswer: true,
     answers: ['berlin']
   },
   {
@@ -70,6 +75,7 @@ export const questions: Question[] = [
     type: 'text',
     duration: 30,
     tags: availableTags as string[],
+    isSingleAnswer: true,
     answers: ['München', 'Muenchen']
   },
   {
@@ -78,6 +84,7 @@ export const questions: Question[] = [
     type: 'text',
     duration: 30,
     tags: availableTags,
+    isSingleAnswer: true,
     answers: ['Bonjour']
   },
   {
@@ -92,6 +99,7 @@ export const questions: Question[] = [
       { id: 'wien', text: 'Wien' },
       { id: 'zürich', text: 'Zürich' }
     ],
+    isSingleAnswer: true,
     answers: ['berlin']
   },
   {
@@ -100,6 +108,7 @@ export const questions: Question[] = [
     type: 'text',
     duration: 30,
     tags: availableTags,
+    isSingleAnswer: true,
     answers: ['Bonjour']
   },
   {
@@ -118,6 +127,7 @@ export const questions: Question[] = [
       { id: 'hamburg', text: 'Hamburg' },
       { id: 'frankfurt', text: 'Frankfurt' }
     ],
+    isSingleAnswer: true,
     answers: ['berlin', 'münchen', 'hamburg', 'frankfurt']
   },
   {
@@ -136,6 +146,7 @@ export const questions: Question[] = [
       { id: 'ich bin in Düsseldorf', text: 'Ich bin in Düsseldorf' },
       { id: 'ich bin in Dortmund', text: 'Ich bin in Dortmund' }
     ],
+    isSingleAnswer: true,
     answers: ['ich bin in München', 'ich bin in Berlin', 'ich bin in Hamburg', 'ich bin in Frankfurt']
   }
   // Add more sample questions as needed

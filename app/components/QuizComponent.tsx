@@ -15,8 +15,11 @@ export interface Question {
   text: string;
   type: 'multiple-choice' | 'text';
   choices?: Choice[];
+  isSingleAnswer?: boolean;
   duration?: number;
   tags: string[];
+  answers: string[];
+  explanation?: string;
 }
 
 export interface QuizConfig {
@@ -191,15 +194,8 @@ function Quiz({ config }: QuizComponentProps) {
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
 
-  const [isQuizStarted, setIsQuizStarted] = useState(false);
-  const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
-
   const onComplete = (answers: Answer[]) => {
     setIsQuizeFinished(true);
-  };
-  const handleSelectQuestions = (questions: Question[]) => {
-    setSelectedQuestions(questions);
-    setIsQuizStarted(true);
   };
 
   useEffect(() => {
@@ -492,26 +488,39 @@ function DefaultView() {
 }
 
 function QuizResult({ answers, questions }: { answers: Answer[]; questions: Question[] }) {
+  function isAnswerCorrect(question: Question, userAnswer: string) {
+    if (question.type === 'multiple-choice') {
+      return question.choices?.find((choice) => choice.id === userAnswer)?.text === 'True';
+    } else {
+      return question.answers.includes(userAnswer);
+    }
+  }
+  const questionWithAnswers = questions.map((question) => {
+    const answer = answers.find((a) => a.questionId === question.id);
+    return {
+      ...question,
+      userAnswer: answer?.answer,
+      isCorrect: answer?.answer ? isAnswerCorrect(question, answer?.answer) : false,
+    };
+  });
   const correctAnswers = answers.filter((answer) => {
     const question = questions.find((q) => q.id === answer.questionId);
     if (!question) return false;
-    if (question.type === 'multiple-choice') {
-      return question.choices?.find((choice) => choice.id === answer.answer)?.text === 'True';
-    }
-    return false;
+    return isAnswerCorrect(question, answer.answer);
   });
+
   const totalQuestions = questions.length;
   const totalCorrect = correctAnswers.length;
   const totalWrong = totalQuestions - totalCorrect;
   const totalPercentage = (totalCorrect / totalQuestions) * 100;
 
   return (
+    <div>
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col items-center justify-center px-6">
-      <div className="w-full max-w-5xl mx-auto text-center">
+        <div className="w-full max-w-2xl mx-auto text-center">
         <h1 className="text-5xl font-bold text-gray-900 mb-6">
           Quiz Results
-        </h1>
-
+          </h1>
         <div className="mb-8">
           <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto">
             <div className="flex items-center justify-between mb-4">
@@ -530,6 +539,32 @@ function QuizResult({ answers, questions }: { answers: Answer[]; questions: Ques
               <div className="text-xl text-gray-800">Percentage</div>
               <div className="text-xl font-bold text-blue-600">{totalPercentage}%</div>
             </div>
+          </div>
+
+          </div>
+          <div className="w-full max-w-5xl mx-auto text-center">
+            <h2 className="text-3xl font-bold text-gray-900 mb-6">Review Your Answers</h2>
+            {questionWithAnswers.map((question, index) => {
+              const userAnswer = question.userAnswer;
+              const isCorrect = question.isCorrect;
+              return (
+                <div key={question.id} className={`p-4 mb-4 rounded-lg shadow-lg ${isCorrect ? 'bg-green-100' : 'bg-red-100'}`}>
+                  <h3 className="text-xl font-semibold mb-2">{index + 1}. {question.text}</h3>
+                  {question.choices && (
+                    <ul className="list-disc list-inside">
+                      {question.choices.map(choice => (
+                        <li key={choice.id} className={`${choice.text === userAnswer ? 'font-bold' : ''}`}>
+                          {choice.text}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {question.explanation && (
+                    <p className="mt-2 text-gray-700"><strong>Explanation:</strong> {question.explanation}</p>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
         </div>
