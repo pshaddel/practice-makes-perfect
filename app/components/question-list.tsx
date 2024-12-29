@@ -51,7 +51,7 @@ export default function QuestionList({ questions, onSelectQuestions }: QuestionL
             const newSelection = isSelected
                 ? prev.filter((q) => q.id !== question.id)
                 : [...prev, question];
-            onSelectQuestions(newSelection);
+            // onSelectQuestions(newSelection);
             return newSelection;
         });
     };
@@ -65,6 +65,30 @@ export default function QuestionList({ questions, onSelectQuestions }: QuestionL
                         <p className="text-sm text-gray-500 mt-2">
                             Select questions to add to your quiz. Scroll down to load more.
                         </p>
+                        <div className="mt-4 flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    onChange={(e) => {
+                                        if (e.target.checked) {
+                                            setSelectedQuestions(questions);
+                                        } else {
+                                            setSelectedQuestions([]);
+                                        }
+                                    }}
+                                    checked={selectedQuestions.length === questions.length}
+                                />
+                                <span className="text-gray-700">Select All</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input
+                                    type="checkbox"
+                                    onChange={() => setSelectedQuestions([])}
+                                    checked={selectedQuestions.length === 0}
+                                />
+                                <span className="text-gray-700">Deselect All</span>
+                            </label>
+                        </div>
                     </div>
                     <div className="p-6">
                         <div className="space-y-4">
