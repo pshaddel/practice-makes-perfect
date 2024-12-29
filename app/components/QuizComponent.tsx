@@ -49,6 +49,7 @@ export default function QuizComponent({ config }: QuizComponentProps) {
   const [isFocusMode, setIsFocusMode] = useState(false);
   const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isQuizeFinished, setIsQuizeFinished] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
@@ -167,6 +168,145 @@ export default function QuizComponent({ config }: QuizComponentProps) {
     return <QuestionList questions={config.questions} onSelectQuestions={handleSelectQuestions} />;
   }
 
+  const newConfig = { questions: selectedQuestions, totalDuration };
+  return (
+    <Quiz config={newConfig} />
+  )
+}
+
+function Quiz({ config }: QuizComponentProps) {
+  const { questions, totalDuration } = config;
+  if (!questions || questions.length === 0) {
+    return <DefaultView />;
+  }
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [answers, setAnswers] = useState<Answer[]>([]);
+  const [currentAnswer, setCurrentAnswer] = useState('');
+  const [isQuestionTimeUp, setIsQuestionTimeUp] = useState(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('right');
+  const [isAnimating, setIsAnimating] = useState(false);
+  const [isQuizeFinished, setIsQuizeFinished] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const currentQuestion = questions[currentIndex];
+  const isLastQuestion = currentIndex === questions.length - 1;
+
+  const [isQuizStarted, setIsQuizStarted] = useState(false);
+  const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
+
+  const onComplete = (answers: Answer[]) => {
+    setIsQuizeFinished(true);
+  };
+  const handleSelectQuestions = (questions: Question[]) => {
+    setSelectedQuestions(questions);
+    setIsQuizStarted(true);
+  };
+
+  useEffect(() => {
+    setIsQuestionTimeUp(false);
+  }, [currentIndex]);
+
+  useEffect(() => {
+    if (currentQuestion.type === 'text') {
+      inputRef.current?.focus();
+    }
+  }, [currentIndex, currentQuestion.type]);
+
+  const handleNext = () => {
+    if (currentAnswer.trim() === '' || isAnimating) return;
+
+    setIsAnimating(true);
+    setSlideDirection('left');
+
+    const newAnswers = [...answers];
+    const existingAnswerIndex = answers.findIndex(a => a.questionId === currentQuestion.id);
+    const newAnswer = { questionId: currentQuestion.id, answer: currentAnswer };
+
+    if (existingAnswerIndex >= 0) {
+      newAnswers[existingAnswerIndex] = newAnswer;
+    } else {
+      newAnswers.push(newAnswer);
+    }
+
+    setAnswers(newAnswers);
+    setCurrentAnswer('');
+
+    if (isLastQuestion) {
+      onComplete(newAnswers);
+    } else {
+      setTimeout(() => {
+        setCurrentIndex(prev => prev + 1);
+        const nextQuestion = questions[currentIndex + 1];
+        const previousAnswer = newAnswers.find(a => a.questionId === nextQuestion.id);
+        if (previousAnswer) {
+          setCurrentAnswer(previousAnswer.answer);
+        }
+        setIsAnimating(false);
+      }, 300);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentIndex > 0 && !isAnimating) {
+      setIsAnimating(true);
+      setSlideDirection('right');
+
+      setTimeout(() => {
+        setCurrentIndex(prev => prev - 1);
+        const previousAnswer = answers.find(a => a.questionId === questions[currentIndex - 1].id);
+        setCurrentAnswer(previousAnswer?.answer || '');
+        setIsAnimating(false);
+      }, 300);
+    }
+  };
+
+  const handleQuestionTimeUp = () => {
+    setIsQuestionTimeUp(true);
+    handleNext();
+  };
+
+  const handleTotalTimeUp = () => {
+    onComplete(answers);
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isQuestionTimeUp || isAnimating) return;
+
+      if (e.key === 'f' && e.ctrlKey) {
+        e.preventDefault();
+        setIsFocusMode(prev => !prev);
+        return;
+      }
+
+      if (currentQuestion.type === 'multiple-choice' && currentQuestion.choices) {
+        const num = parseInt(e.key);
+        if (num >= 1 && num <= currentQuestion.choices.length) {
+          const choice = currentQuestion.choices[num - 1];
+          setCurrentAnswer(choice.id);
+        }
+      }
+
+      switch (e.key) {
+        case 'Enter':
+          if (currentAnswer.trim()) handleNext();
+          break;
+        case 'ArrowLeft':
+          handlePrevious();
+          break;
+        case 'ArrowRight':
+          if (currentAnswer.trim()) handleNext();
+          break;
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [currentIndex, currentAnswer, currentQuestion, isQuestionTimeUp, isAnimating]);
+
+  if (isQuizeFinished) {
+    return <QuizResult answers={answers} questions={questions} />;
+  }
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${
@@ -345,6 +485,53 @@ function DefaultView() {
             Go Back Home
             <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
           </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function QuizResult({ answers, questions }: { answers: Answer[]; questions: Question[] }) {
+  const correctAnswers = answers.filter((answer) => {
+    const question = questions.find((q) => q.id === answer.questionId);
+    if (!question) return false;
+    if (question.type === 'multiple-choice') {
+      return question.choices?.find((choice) => choice.id === answer.answer)?.text === 'True';
+    }
+    return false;
+  });
+  const totalQuestions = questions.length;
+  const totalCorrect = correctAnswers.length;
+  const totalWrong = totalQuestions - totalCorrect;
+  const totalPercentage = (totalCorrect / totalQuestions) * 100;
+
+  return (
+    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white flex flex-col items-center justify-center px-6">
+      <div className="w-full max-w-5xl mx-auto text-center">
+        <h1 className="text-5xl font-bold text-gray-900 mb-6">
+          Quiz Results
+        </h1>
+
+        <div className="mb-8">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-md mx-auto">
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-xl text-gray-800">Total Questions</div>
+              <div className="text-xl font-bold text-gray-800">{totalQuestions}</div>
+            </div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-xl text-gray-800">Correct Answers</div>
+              <div className="text-xl font-bold text-green-600">{totalCorrect}</div>
+            </div>
+            <div className="flex items-center justify-between mb-4">
+              <div className="text-xl text-gray-800">Wrong Answers</div>
+              <div className="text-xl font-bold text-red-600">{totalWrong}</div>
+            </div>
+            <div className="flex items-center justify-between">
+              <div className="text-xl text-gray-800">Percentage</div>
+              <div className="text-xl font-bold text-blue-600">{totalPercentage}%</div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>

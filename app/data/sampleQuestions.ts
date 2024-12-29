@@ -25,7 +25,8 @@ export const questions: Question[] = [
     text: 'Was ist der Unterschied zwischen "sein" und "haben" im Perfekt?',
     type: 'text',
     duration: 120,
-    tags: ['Grammatik', 'Schreiben']
+    tags: ['Grammatik', 'Schreiben'],
+    answers: ['sein ist ein Hilfsverb', 'haben ist ein Vollverb']
   },
   {
     id: '2',
@@ -38,14 +39,16 @@ export const questions: Question[] = [
       { id: 'fahren', text: 'fahren' },
       { id: 'rennen', text: 'rennen' },
       { id: 'fliegen', text: 'fliegen' }
-    ]
+    ],
+    answers: ['laufen', 'rennen']
   },
   {
     id: '3',
     text: 'Wie sagt man "Guten Morgen" auf Französisch?',
     type: 'text',
     duration: 30,
-    tags: ['Wortschatz', 'Sprechen']
+    tags: ['Wortschatz', 'Sprechen'],
+    answers: ['Bonjour']
   },
   {
     id: '4',
@@ -58,21 +61,24 @@ export const questions: Question[] = [
       { id: 'paris', text: 'Paris' },
       { id: 'wien', text: 'Wien' },
       { id: 'zürich', text: 'Zürich' }
-    ]
+    ],
+    answers: ['berlin']
   },
   {
     id: '5',
     text: 'Was ist die Hauptstadt von Bayern?',
     type: 'text',
     duration: 30,
-    tags: availableTags as string[]
+    tags: availableTags as string[],
+    answers: ['München', 'Muenchen']
   },
   {
     id: '6',
     text: 'Wie sagt man "Guten Morgen" auf Französisch?',
     type: 'text',
     duration: 30,
-    tags: availableTags
+    tags: availableTags,
+    answers: ['Bonjour']
   },
   {
     id: '7',
@@ -85,14 +91,16 @@ export const questions: Question[] = [
       { id: 'paris', text: 'Paris' },
       { id: 'wien', text: 'Wien' },
       { id: 'zürich', text: 'Zürich' }
-    ]
+    ],
+    answers: ['berlin']
   },
   {
     id: '8',
     text: 'Wie sagt man "Guten Morgen" auf Französisch?',
     type: 'text',
     duration: 30,
-    tags: availableTags
+    tags: availableTags,
+    answers: ['Bonjour']
   },
   {
     id: '9',
@@ -109,7 +117,8 @@ export const questions: Question[] = [
       { id: 'münchen', text: 'München' },
       { id: 'hamburg', text: 'Hamburg' },
       { id: 'frankfurt', text: 'Frankfurt' }
-    ]
+    ],
+    answers: ['berlin', 'münchen', 'hamburg', 'frankfurt']
   },
   {
     id: '10',
@@ -126,7 +135,8 @@ export const questions: Question[] = [
       { id: 'ich bin in Stuttgart', text: 'Ich bin in Stuttgart' },
       { id: 'ich bin in Düsseldorf', text: 'Ich bin in Düsseldorf' },
       { id: 'ich bin in Dortmund', text: 'Ich bin in Dortmund' }
-    ]
+    ],
+    answers: ['ich bin in München', 'ich bin in Berlin', 'ich bin in Hamburg', 'ich bin in Frankfurt']
   }
   // Add more sample questions as needed
 ];

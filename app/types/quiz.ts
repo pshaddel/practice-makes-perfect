@@ -10,6 +10,8 @@ export interface Question {
   choices?: Choice[];
   duration?: number;
   tags: string[];
+  answers: string[];
+  explanation?: string;
 }
 
 export interface QuizConfig {
