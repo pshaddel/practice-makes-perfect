@@ -9,6 +9,8 @@ interface Question {
         text: string;
     }[];
     duration?: number;
+    isSingleAnswer?: boolean;
+    answers: string[];
     tags: string[];
 }
 
