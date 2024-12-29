@@ -53,17 +53,13 @@ export default function QuizComponent({ config }: QuizComponentProps) {
   const currentQuestion = questions[currentIndex];
   const isLastQuestion = currentIndex === questions.length - 1;
 
-  const [isQuizStarted, setIsQuizStarted] = useState(true);
+  const [isQuizStarted, setIsQuizStarted] = useState(false);
   const [selectedQuestions, setSelectedQuestions] = useState<Question[]>([]);
 
   const handleSelectQuestions = (questions: Question[]) => {
     setSelectedQuestions(questions);
     setIsQuizStarted(true);
   };
-
-  if (!isQuizStarted) {
-    return <QuestionList questions={config.questions} onSelectQuestions={handleSelectQuestions} />;
-  }
 
   useEffect(() => {
     setIsQuestionTimeUp(false);
@@ -166,6 +162,11 @@ export default function QuizComponent({ config }: QuizComponentProps) {
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [currentIndex, currentAnswer, currentQuestion, isQuestionTimeUp, isAnimating]);
+
+  if (!isQuizStarted) {
+    return <QuestionList questions={config.questions} onSelectQuestions={handleSelectQuestions} />;
+  }
+
 
   return (
     <div className={`min-h-screen transition-colors duration-500 ${

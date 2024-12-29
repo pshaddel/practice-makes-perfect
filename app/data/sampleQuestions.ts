@@ -104,8 +104,29 @@ export const questions: Question[] = [
       { id: 'berlin', text: 'Berlin' },
       { id: 'paris', text: 'Paris' },
       { id: 'wien', text: 'Wien' },
-      { id: 'zürich', text: 'Zürich' }
+      { id: 'zürich', text: 'Zürich' },
+      { id: 'london', text: 'London' },
+      { id: 'münchen', text: 'München' },
+      { id: 'hamburg', text: 'Hamburg' },
+      { id: 'frankfurt', text: 'Frankfurt' }
     ]
   },
+  {
+    id: '10',
+    text: 'Welche Satz ist richtig?',
+    type: 'multiple-choice',
+    duration: 45,
+    tags: availableTags,
+    choices: [
+      { id: 'ich bin in München', text: 'Ich bin in München' },
+      { id: 'ich bin in Berlin', text: 'Ich bin in Berlin' },
+      { id: 'ich bin in Hamburg', text: 'Ich bin in Hamburg' },
+      { id: 'ich bin in Frankfurt', text: 'Ich bin in Frankfurt am Main' },
+      { id: 'ich bin in Köln', text: 'Ich bin in Köln' },
+      { id: 'ich bin in Stuttgart', text: 'Ich bin in Stuttgart' },
+      { id: 'ich bin in Düsseldorf', text: 'Ich bin in Düsseldorf' },
+      { id: 'ich bin in Dortmund', text: 'Ich bin in Dortmund' }
+    ]
+  }
   // Add more sample questions as needed
 ];
