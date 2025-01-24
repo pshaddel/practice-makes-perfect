@@ -19,15 +19,25 @@ export function Start() {
   const router = useRouter();
   const searchParams: ReadonlyURLSearchParams = useSearchParams();
   return (
+    <div>
+
+
     <button
       type='button'
-      className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 group"
-    >
+        className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 group m-[10px]"
+      >
+        <Link href={'/practice?tags=' + searchParams.get('tags')} prefetch={true}>
+          Start Practicing
+        </Link>
+      </button>
+      <button type='button'
+        className="inline-flex items-center gap-2 px-8 py-4 bg-blue-600 text-white rounded-xl font-medium hover:bg-blue-700 transition-colors duration-200 group m-[10px]"
+      >
       <Link href={goToQuestionsList(searchParams, router)} prefetch={true}>
-        Start Practice
-        <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform duration-200" />
+          Create Quize
       </Link>
     </button>
+    </div>
   );
 }
 
