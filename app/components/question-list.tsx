@@ -182,11 +182,24 @@ export default function QuestionList({ questions, onSelectQuestions }: QuestionL
 }
 
 function AutoSelectModal({ onClose, onSelectQuestions }: { onClose: () => void; onSelectQuestions: (questions: Question[]) => void }) {
-    // there is a text box to enter the number of questions
-    // and a button to select random questions and directly go to quiz
+    const modalRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+                onClose();
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [onClose]);
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-            <div className="bg-white rounded-lg p-6 max-w-xl w-full">
+            <div ref={modalRef} className="bg-white rounded-lg p-6 max-w-xl w-full">
                 <h2 className="text-2xl font-bold text-gray-800">Auto Select Questions</h2>
                 <p className="text-sm text-gray-500 mt-2">
                     Enter the number of questions you want to select randomly.
